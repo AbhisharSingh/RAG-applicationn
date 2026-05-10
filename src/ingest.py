@@ -87,13 +87,13 @@ def ingest() -> None:
             page.metadata["page"] = int(page.metadata.get("page", 0)) + 1
 
         chunks = splitter.split_documents(pages)
-        page_chunk_counters: defaultdict[tuple[str | None, int | None], int] = defaultdict(
+        chunk_index_by_page: defaultdict[tuple[str | None, int | None], int] = defaultdict(
             int
         )
         for chunk in chunks:
             key = (chunk.metadata.get("source"), chunk.metadata.get("page"))
-            chunk.metadata["chunk"] = page_chunk_counters[key]
-            page_chunk_counters[key] += 1
+            chunk.metadata["chunk"] = chunk_index_by_page[key]
+            chunk_index_by_page[key] += 1
         all_chunks.extend(chunks)
 
     if not all_chunks:

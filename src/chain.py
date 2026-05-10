@@ -50,6 +50,6 @@ def answer_question(question: str, k: int = 4):
         if key in seen:
             continue
         seen.add(key)
-        sources.append({"file": source, "page": int(page)})
+        sources.append({"file": source, "page": page})
 
     return {"answer": response.strip(), "sources": sources}

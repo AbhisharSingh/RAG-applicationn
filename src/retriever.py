@@ -30,11 +30,13 @@ def retrieve(query: str, k: int = 4):
         return []
 
     vectorstore = _load_vectorstore()
-    # Chroma doesn't expose a public count API, so fall back to the collection when available.
     try:
-        if vectorstore._collection.count() == 0:
+        sample = vectorstore.get(limit=1)
+        if not sample.get("ids"):
             raise ValueError("Vector store is empty. Run ingest.py to index documents.")
-    except AttributeError:
-        pass
+    except (AttributeError, TypeError):
+        # Fall back to the private collection if the public API isn't available.
+        if hasattr(vectorstore, "_collection") and vectorstore._collection.count() == 0:
+            raise ValueError("Vector store is empty. Run ingest.py to index documents.")
 
     return vectorstore.similarity_search(query, k=k)
