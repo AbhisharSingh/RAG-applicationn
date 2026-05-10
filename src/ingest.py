@@ -2,9 +2,7 @@
 ingest.py — Load PDFs from data/, clean + chunk text, embed with nomic-embed-text,
 and store everything in a local ChromaDB collection.
 
-Run this once (or re-run after adding new PDFs). It won't re-embed docs that
-are already in the store — it wipes and rebuilds from scratch each time, which
-is the safest default for a corpus this size.
+
 """
 
 import os
@@ -17,15 +15,14 @@ from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_ollama import OllamaEmbeddings
 from langchain_chroma import Chroma
 
-# ── paths (relative to project root, not this file) ──────────────────────────
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DATA_DIR     = PROJECT_ROOT / "data"
 CHROMA_DIR   = PROJECT_ROOT / "chroma_db"
 
 COLLECTION_NAME = "nitrourkela_docs"
 
-# ── embedding model ──────────────────────────────────────────────────────────
-# nomic-embed-text produces 768-dim vectors; good balance of quality vs speed.
+
 EMBED_MODEL = "nomic-embed-text"
 
 
@@ -96,8 +93,7 @@ def chunk_documents(docs: list) -> list:
     """
     Split pages into smaller chunks for retrieval.
 
-    chunk_size=600 chars keeps chunks focused on a single topic.
-    overlap=80 ensures sentences don't get arbitrarily cut at boundaries.
+   
     """
     splitter = RecursiveCharacterTextSplitter(
         chunk_size=600,
@@ -124,9 +120,7 @@ def build_vector_store(chunks: list) -> None:
     """
     Embed chunks with nomic-embed-text (via local Ollama) and persist to ChromaDB.
 
-    We delete + recreate the collection on every run so the index stays in sync
-    with whatever is currently in data/. For large corpora you'd want incremental
-    upserts — overkill for this use case.
+  
     """
     print(f"[ingest] Connecting to Ollama and loading '{EMBED_MODEL}' embeddings …")
     embeddings = OllamaEmbeddings(model=EMBED_MODEL)
