@@ -25,12 +25,16 @@ def _load_vectorstore() -> Chroma:
 
 
 def retrieve(query: str, k: int = 4):
+    """Return top-k similar chunks for a query from the persisted vector store."""
     if not query.strip():
         return []
 
     vectorstore = _load_vectorstore()
     docs = vectorstore.similarity_search(query, k=k)
     if not docs:
-        raise ValueError("Vector store is empty. Run ingest.py to index documents.")
+        raise ValueError(
+            "No documents were retrieved from the vector store. "
+            "Run ingest.py to index documents."
+        )
 
     return docs

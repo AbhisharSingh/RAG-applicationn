@@ -28,6 +28,7 @@ def _llm() -> OllamaLLM:
 
 
 def answer_question(question: str, k: int = 4):
+    """Answer a question and return the answer plus source file/page pairs."""
     docs = retrieve(question, k=k)
     if not docs:
         return {
