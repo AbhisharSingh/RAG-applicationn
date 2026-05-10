@@ -1,0 +1,20 @@
+# Core LangChain
+langchain==0.3.25
+langchain-core==0.3.60
+langchain-community==0.3.24
+langchain-ollama==0.3.3
+langchain-chroma==0.2.4
+
+# Vector store
+chromadb>=1.0.9
+
+# PDF loading
+pypdf==5.4.0
+
+# API
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+pydantic==2.11.4
+
+# Used in api.py health check
+httpx==0.28.1
