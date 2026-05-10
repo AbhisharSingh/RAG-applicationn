@@ -1,8 +1,5 @@
 """
-chain.py — Assembles the RAG pipeline: retrieve → format context → ask the LLM.
 
-Deliberately kept procedural (no LangChain Expression Language magic) so you
-can read it top-to-bottom and understand exactly what's happening.
 """
 
 from langchain_ollama import OllamaLLM
@@ -12,13 +9,7 @@ from src.retriever import retrieve
 
 LLM_MODEL = "llama3.2"
 
-# ── Prompt ───────────────────────────────────────────────────────────────────
-# The most important part of any RAG system.
-# Rules baked in:
-#   1. Answer ONLY from the provided context.
-#   2. If the answer isn't there, say so — don't guess.
-#   3. Be concise but complete.
-#   4. Cite which document each claim comes from.
+
 
 PROMPT_TEMPLATE = PromptTemplate(
     input_variables=["context", "question"],
@@ -40,7 +31,7 @@ Question: {question}
 Answer:""",
 )
 
-# Module-level LLM instance — same reason as the vectorstore singleton in retriever.py
+
 _llm: OllamaLLM | None = None
 
 
@@ -87,15 +78,15 @@ def ask(question: str, k: int = 4) -> dict:
             "sources": [],
         }
 
-    # Step 2 — build the context string the LLM will read
+   
     context = format_context(chunks)
 
-    # Step 3 — fill the prompt and call the LLM
+   
     prompt = PROMPT_TEMPLATE.format(context=context, question=question)
     llm    = get_llm()
     answer = llm.invoke(prompt)
 
-    # Step 4 — collect unique sources (deduplicate by file + page)
+    
     seen    = set()
     sources = []
     for chunk in chunks:
