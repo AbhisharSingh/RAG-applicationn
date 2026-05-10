@@ -43,10 +43,12 @@ def answer_question(question: str, k: int = 4):
     for doc in docs:
         source = doc.metadata.get("source", "unknown")
         page = doc.metadata.get("page")
+        if page is None:
+            continue
         key = (source, page)
         if key in seen:
             continue
         seen.add(key)
-        sources.append({"file": source, "page": int(page) if page is not None else -1})
+        sources.append({"file": source, "page": int(page)})
 
     return {"answer": response.strip(), "sources": sources}
