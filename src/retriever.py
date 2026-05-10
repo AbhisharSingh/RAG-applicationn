@@ -1,8 +1,7 @@
 """
 retriever.py — Thin wrapper around the persisted ChromaDB index.
 
-Keeps retrieval logic in one place so both chain.py and any future
-CLI tooling can share it without re-implementing the boilerplate.
+
 """
 
 from pathlib import Path
@@ -36,8 +35,7 @@ def _load_vectorstore() -> Chroma:
     )
 
 
-# Module-level singleton — loaded once on first import, reused for every request.
-# This avoids reconnecting to Ollama on every API call.
+
 _vectorstore: Chroma | None = None
 
 
