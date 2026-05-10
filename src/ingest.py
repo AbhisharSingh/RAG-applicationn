@@ -59,7 +59,7 @@ def ingest() -> None:
         return
 
     if CHROMA_DIR.exists() and RESET_CHROMA:
-        # Reset the index to start fresh and remove all existing documents.
+        # Reset the index to start fresh and remove all existing documents (data loss).
         shutil.rmtree(CHROMA_DIR)
 
     embeddings = OllamaEmbeddings(model=EMBED_MODEL, base_url=OLLAMA_BASE_URL)
