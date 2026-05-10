@@ -16,5 +16,4 @@ fastapi==0.115.12
 uvicorn[standard]==0.34.2
 pydantic==2.11.4
 
-# Used in api.py health check
-httpx==0.28.1
+
