@@ -18,6 +18,9 @@ Optional environment overrides:
 - `OLLAMA_BASE_URL` (default: `http://localhost:11434`)
 - `OLLAMA_LLM_MODEL` (default: `llama3.2`)
 - `OLLAMA_EMBED_MODEL` (default: `nomic-embed-text`)
+- `CHUNK_SIZE` (default: `600`)
+- `CHUNK_OVERLAP` (default: `80`)
+- `RESET_CHROMA` (default: `true`)
 
 ## Ingest documents
 1. Place PDFs under `data/` (nested folders are supported).

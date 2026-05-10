@@ -19,6 +19,7 @@ OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
 CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "600"))
 CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "80"))
+RESET_CHROMA = os.getenv("RESET_CHROMA", "true").lower() in {"1", "true", "yes"}
 
 MIN_REPEAT_COUNT = 2
 REPEAT_FRACTION = 0.5
@@ -57,7 +58,7 @@ def ingest() -> None:
         print(f"No PDFs found under {DATA_DIR}.")
         return
 
-    if CHROMA_DIR.exists():
+    if CHROMA_DIR.exists() and RESET_CHROMA:
         # Reset the index to avoid duplicating documents on re-ingest.
         shutil.rmtree(CHROMA_DIR)
 
