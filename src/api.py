@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from fastapi import FastAPI, HTTPException
+import httpx
 from pydantic import BaseModel
 
 from .chain import answer_question
@@ -29,13 +30,12 @@ def ask_question(payload: QuestionRequest):
         raise HTTPException(status_code=503, detail=str(exc)) from exc
     except ValueError as exc:
         raise HTTPException(status_code=503, detail=str(exc)) from exc
+    except httpx.HTTPError as exc:
+        raise HTTPException(
+            status_code=503,
+            detail="Ollama server is not reachable. Ensure it is running.",
+        ) from exc
     except Exception as exc:
-        message = str(exc).lower()
-        if "connection" in message or "ollama" in message:
-            raise HTTPException(
-                status_code=503,
-                detail="Ollama server is not reachable. Ensure it is running.",
-            ) from exc
         raise HTTPException(
             status_code=500,
             detail="Unexpected error while generating the answer.",

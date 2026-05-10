@@ -17,17 +17,23 @@ CHROMA_DIR = ROOT_DIR / "chroma_db"
 
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
 EMBED_MODEL = os.getenv("OLLAMA_EMBED_MODEL", "nomic-embed-text")
+CHUNK_SIZE = int(os.getenv("CHUNK_SIZE", "600"))
+CHUNK_OVERLAP = int(os.getenv("CHUNK_OVERLAP", "80"))
+
+MIN_REPEAT_COUNT = 2
+REPEAT_FRACTION = 0.5
+MAX_REPEAT_LINE_LENGTH = 120
 
 
 def _find_repeated_lines(page_lines: list[list[str]]) -> set[str]:
     counts: Counter[str] = Counter()
     for lines in page_lines:
         counts.update(set(line.lower() for line in lines if line))
-    threshold = max(2, int(len(page_lines) * 0.5))
+    threshold = max(MIN_REPEAT_COUNT, int(len(page_lines) * REPEAT_FRACTION))
     return {
         line
         for line, count in counts.items()
-        if count >= threshold and len(line) <= 120
+        if count >= threshold and len(line) <= MAX_REPEAT_LINE_LENGTH
     }
 
 
@@ -56,7 +62,9 @@ def ingest() -> None:
         shutil.rmtree(CHROMA_DIR)
 
     embeddings = OllamaEmbeddings(model=EMBED_MODEL, base_url=OLLAMA_BASE_URL)
-    splitter = RecursiveCharacterTextSplitter(chunk_size=600, chunk_overlap=80)
+    splitter = RecursiveCharacterTextSplitter(
+        chunk_size=CHUNK_SIZE, chunk_overlap=CHUNK_OVERLAP
+    )
 
     all_chunks = []
     total_pages = 0
